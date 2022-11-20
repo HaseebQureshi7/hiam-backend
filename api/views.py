@@ -86,7 +86,6 @@ def UpdateProfilePicture(request, id):
                 'response': 'Old post image deleted...! path = '+str(post.image.path)}
         except Exception as e:
             response = {'response': 'No image for delete '+str(e)}
-            return JsonResponse(status=406, data=response, safe=False)
 
         post.profilePicture = request.FILES['profilePicture']
         post.save()
@@ -154,6 +153,20 @@ def ViewUserExperience(request, id):
         return JsonResponse(status=406, data={'message': 'Uncaught Error!'}, safe=False)
 
 
+@api_view(['GET'])
+def ViewSingleExperience(request, id):
+    try:
+        singleExperience = UserExperience.objects.filter(id=id)
+        if singleExperience:
+            serializedSingleExperience = UserExperienceSerializer(
+                singleExperience, many=True)
+            return JsonResponse(status=200, data={'data': serializedSingleExperience.data}, safe=False)
+        else:
+            return JsonResponse(status=204, data={'message': 'No User Experience Found!'}, safe=False)
+    except:
+        return JsonResponse(status=406, data={'message': 'Uncaught Error!'}, safe=False)
+
+
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def EditUserExperience(request, id):
@@ -171,6 +184,22 @@ def EditUserExperience(request, id):
             return JsonResponse(status=406, data={'message': 'Bad Data Received!'}, safe=False)
     else:
         return JsonResponse(status=406, data={'message': 'No Experience Found!'}, safe=False)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def DeleteUserExperience(request, id):
+    try:
+        current_user = request.user.id
+        selectedExperience = UserExperience.objects.get(
+            id=id, belongsTo=current_user)
+        if selectedExperience:
+            selectedExperience.delete()
+            return JsonResponse(status=200, data="Xp was deleted successfully!", safe=False)
+        else:
+            return JsonResponse(status=204, data="No Xp found!", safe=False)
+    except:
+        return JsonResponse(status=204, data="No Xp found!", safe=False)
 
 
 # >>>   USER PROJECTS VIEWS HERE
@@ -198,6 +227,19 @@ def ViewUserProject(request, id):
             return JsonResponse(status=200, data={'data': serializedUserProject.data}, safe=False)
         else:
             return JsonResponse(status=204, data={'message': f'No User Projects Found under ID: {id} !'}, safe=False)
+    except:
+        return JsonResponse(status=406, data={'message': 'Uncaught Error!'}, safe=False)
+
+@api_view(['GET'])
+def ViewSingleProject(request, id):
+    try:
+        singleProject = UserProject.objects.filter(id=id)
+        if singleProject:
+            serializedSingleProject = UserProjectSerializer(
+                singleProject, many=True)
+            return JsonResponse(status=200, data={'data': serializedSingleProject.data}, safe=False)
+        else:
+            return JsonResponse(status=204, data={'message': 'No User Projects Found'}, safe=False)
     except:
         return JsonResponse(status=406, data={'message': 'Uncaught Error!'}, safe=False)
 
@@ -232,7 +274,7 @@ def UpdateProjectImage(request, id):
                 'response': 'Old post image deleted...! path = '+str(post.image.path)}
         except Exception as e:
             response = {'response': 'No image for delete '+str(e)}
-            return JsonResponse(status=406, data=response, safe=False)
+            # return JsonResponse(status=406, data=response, safe=False)
 
         post.projectImage = request.FILES['projectImage']
         post.save()
@@ -244,6 +286,22 @@ def UpdateProjectImage(request, id):
             'response': 'Error: Post image update failed...!'
         }
     return JsonResponse(status=406, data='fail', safe=False)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated,])
+def DeleteUserProject(request, id):
+    try:
+        current_user = request.user.id
+        selectedProject = UserProject.objects.get(
+            id=id, belongsTo=current_user)
+        if selectedProject:
+            selectedProject.delete()
+            return JsonResponse(status=200, data="Project was deleted successfully!", safe=False)
+        else:
+            return JsonResponse(status=204, data="No Project found!", safe=False)
+    except:
+        return JsonResponse(status=204, data="No Project found!", safe=False)
 
 
 # >>>   USER SKILL VIEWS HERE
@@ -264,7 +322,7 @@ def MakeUserSkill(request):
 @api_view(['GET'])
 def ViewUserSkill(request, id):
     try:
-        userSkill = UserSkill.objects.filter(belongsTo=id).order_by('level')
+        userSkill = UserSkill.objects.filter(belongsTo=id).order_by('-level')
         if userSkill:
             serializedUserSkill = UserSkillSerializer(
                 userSkill, many=True)
@@ -291,6 +349,22 @@ def EditUserSkill(request, id):
             return JsonResponse(status=406, data={'message': 'Bad Data Received!'}, safe=False)
     else:
         return JsonResponse(status=406, data={'message': 'No Skills Found!'}, safe=False)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def DeleteUserSkill(request, id):
+    try:
+        current_user = request.user.id
+        selectedSkill = UserSkill.objects.get(
+            id=id, belongsTo=current_user)
+        if selectedSkill:
+            selectedSkill.delete()
+            return JsonResponse(status=200, data="Skill was deleted successfully!", safe=False)
+        else:
+            return JsonResponse(status=204, data="No Skill found!", safe=False)
+    except:
+        return JsonResponse(status=204, data="No Skill found!", safe=False)
 
 
 # >>>   USER CERTIFICATES VIEWS HERE
@@ -322,6 +396,20 @@ def ViewUserCertificate(request, id):
         return JsonResponse(status=406, data={'message': 'Uncaught Error!'}, safe=False)
 
 
+@api_view(['GET'])
+def ViewSingleCertificate(request, id):
+    try:
+        singleCertificate = UserCertificate.objects.filter(id=id)
+        if singleCertificate:
+            serializedSingleCertificate = UserCertificateSerializer(
+                singleCertificate, many=True)
+            return JsonResponse(status=200, data={'data': serializedSingleCertificate.data}, safe=False)
+        else:
+            return JsonResponse(status=204, data={'message': 'No User Certificate Found!'}, safe=False)
+    except:
+        return JsonResponse(status=406, data={'message': 'Uncaught Error!'}, safe=False)
+
+
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def EditUserCertificate(request, id):
@@ -331,7 +419,7 @@ def EditUserCertificate(request, id):
             id=id, belongsTo=current_user)
         if selectedCertificate:
             parsedData = JSONParser().parse(request)
-            data = UserSkillSerializer(
+            data = UserCertificateSerializer(
                 selectedCertificate, data=parsedData, partial=True)
             if data.is_valid():
                 data.save()
@@ -342,6 +430,22 @@ def EditUserCertificate(request, id):
             return JsonResponse(status=406, data={'message': 'No Certificates Found!'}, safe=False)
     except:
         return JsonResponse(status=406, data={'message': 'Fatal Error!'}, safe=False)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def DeleteUserCertificate(request, id):
+    try:
+        current_user = request.user.id
+        selectedCertificate = UserCertificate.objects.get(
+            id=id, belongsTo=current_user)
+        if selectedCertificate:
+            selectedCertificate.delete()
+            return JsonResponse(status=200, data="Certificate was deleted successfully!", safe=False)
+        else:
+            return JsonResponse(status=204, data="No Certificate found!", safe=False)
+    except:
+        return JsonResponse(status=204, data="No Certificate found!", safe=False)
 
 
 # >>>   USER LINKS VIEWS HERE
