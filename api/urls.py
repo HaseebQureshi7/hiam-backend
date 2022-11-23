@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import Signup, MakeUserProfile, ViewUserProfile, EditUserProfile, CheckUserNameAvailability, MakeUserExperience, ViewUserExperience, EditUserExperience, MakeUserProject, ViewUserProject, EditUserProject, MakeUserSkill, ViewUserSkill, EditUserSkill, MakeUserCertificate, ViewUserCertificate, EditUserCertificate, MakeUserLink, ViewUserLink, EditUserLink, SearchUsers, NewUsers, PeopleLikeYou, UpdateProfilePicture, GetUsername, UpdateProjectImage, ViewSingleExperience, ViewSingleProject, ViewSingleCertificate, DeleteUserExperience, DeleteUserProject, DeleteUserSkill, DeleteUserCertificate
-
+from .views import Signup, MakeUserProfile, ViewUserProfile, EditUserProfile, CheckUserNameAvailability, MakeUserExperience, ViewUserExperience, EditUserExperience, MakeUserProject, ViewUserProject, EditUserProject, MakeUserSkill, ViewUserSkill, EditUserSkill, MakeUserCertificate, ViewUserCertificate, EditUserCertificate, MakeUserLink, ViewUserLink, EditUserLink, SearchUsers, NewUsers, PeopleLikeYou, UpdateProfilePicture, GetUsername, UpdateProjectImage, ViewSingleExperience, ViewSingleProject, ViewSingleCertificate, DeleteUserExperience, DeleteUserProject, DeleteUserSkill, DeleteUserCertificate, Statistics, FuzzySearch
 urlpatterns = [
     path('signup', Signup),
 
@@ -46,4 +45,8 @@ urlpatterns = [
     path('peoplelikeyou/<str:position>', PeopleLikeYou),
 
     path('newusers', NewUsers),
+
+    path('statistics/', Statistics),
+
+    path('fuzzysearch/<str:username>', FuzzySearch),
 ]

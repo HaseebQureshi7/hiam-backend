@@ -230,6 +230,7 @@ def ViewUserProject(request, id):
     except:
         return JsonResponse(status=406, data={'message': 'Uncaught Error!'}, safe=False)
 
+
 @api_view(['GET'])
 def ViewSingleProject(request, id):
     try:
@@ -289,7 +290,7 @@ def UpdateProjectImage(request, id):
 
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated,])
+@permission_classes([IsAuthenticated, ])
 def DeleteUserProject(request, id):
     try:
         current_user = request.user.id
@@ -515,7 +516,7 @@ def SearchUsers(request, username):
 
 
 # >>>   PEOPLE LIKE YOU  VIEW
-@  api_view(['GET'])
+@api_view(['GET'])
 def PeopleLikeYou(request, position):
     similarPeople = UserProfile.objects.filter(
         position=position, isDiscoverable=True)[:8]
@@ -527,7 +528,7 @@ def PeopleLikeYou(request, position):
 
 
 # >>>   NEW USERS  VIEW
-@  api_view(['GET'])
+@api_view(['GET'])
 def NewUsers(request):
     newUsers = UserProfile.objects.filter(
         isDiscoverable=True).order_by('-createdAt')[:4]
@@ -536,3 +537,34 @@ def NewUsers(request):
         return JsonResponse(status=200, data={'users': serializedUsers.data}, safe=False)
     else:
         return JsonResponse(status=406, data={'message': 'No Users or Error!'}, safe=False)
+
+
+@api_view(['GET'])
+def Statistics(request):
+    try:
+        usersData = UserProfile.objects.all()
+        users = len(usersData)
+
+        projectsData = UserProject.objects.all()
+        projects = len(projectsData)
+
+        certificatesData = UserCertificate.objects.all()
+        certificates = len(certificatesData)
+
+        return JsonResponse(status=200, data={'users': users, 'projects': projects, 'certificates': certificates}, safe=False)
+    except:
+        return JsonResponse(status=406, data={'message': 'Unexpected Error!'}, safe=False)
+
+
+# >>>   SEARCH USERS VIEW
+@api_view(['GET'])
+def FuzzySearch(request, username):
+    try:
+        matchedUsers = UserProfile.objects.get(fname__icontains=username)
+        if matchedUsers:
+            serializedUserProfile = UserProfileSerializer(matchedUsers)
+            return JsonResponse(status=200, data={'users': serializedUserProfile.data}, safe=False)
+        else:
+            return JsonResponse(status=204, data={'message': 'No user found!'}, safe=False)
+    except:
+        return JsonResponse(status=204, data={'message': 'No user found!'}, safe=False)
