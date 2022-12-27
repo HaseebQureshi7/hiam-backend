@@ -15,7 +15,7 @@ These instructions will get you a copy of the project up and running on your loc
 After cloning this project, run the following commands in order
 
 1. pip venv env (to make an enviornment (env) for the project)
-2. env/bin/activate (to active the enviornment)
+2. env/bin/activate (to activate the enviornment)
 3. pip install -m requirements.txt
 4. cd hiam-backend (to move into the root directory)
 5. py manage.py runserver (to start the server)
